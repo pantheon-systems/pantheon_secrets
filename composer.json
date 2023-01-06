@@ -10,7 +10,7 @@
     ],
     "require": {
         "drupal/key": "^1.16",
-        "pantheon-systems/customer-secrets-php-sdk": "^1.0"
+        "pantheon-systems/customer-secrets-php-sdk": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -23,7 +23,7 @@
             "email": "kevin.porras@pantheon.io"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "scripts": {
         "code:lint": [
             "vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer",
