@@ -22,11 +22,9 @@ jobs:
       TERM: dumb
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
       TERMINUS_SITE: ${{ secrets.TERMINUS_SITE }}
-      TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
       GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       BASH_ENV: ~/.bashrc
     steps:
       - name: Checkout
@@ -60,14 +58,13 @@ jobs:
       TERM: dumb
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
       TERMINUS_SITE: ${{ secrets.TERMINUS_SITE }}
-      TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
       GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SANDBOX_SSH_KEY: ${{ secrets.SANDBOX_SSH_KEY }}
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
+      TERMINUS_BASE_ENV: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -81,13 +78,16 @@ jobs:
 
       - name: Log in to Terminus
         run: |
-          terminus auth:login --email=$GIT_EMAIL --machine-token="$TERMINUS_TOKEN"
+          terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
           terminus auth:whoami
 
       - name: Setup SSH Keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SANDBOX_SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Make multidev
+        run: ./.ci/create-multidev.sh &
 
       - name: Composer install
         run: composer install --ignore-platform-req=php
@@ -96,34 +96,14 @@ jobs:
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
         uses: mxschmitt/action-tmate@v3
 
+      - name: Wait for multidev to be ready
+        run: |
+          while [ ! -f multidev-made.txt ]
+          do
+            sleep 2
+          done
+          exit 0
+
       - name: Run tests
         run: |
-          export TERMINUS_ORG=$TERMINUS_ORG
           # Do something here.
-          #./vendor/bin/robo test:full $DRUPAL_VERSION $TERMINUS_SITE
-
-  mirror_do:
-    runs-on: ubuntu-latest
-    name: Checkout & push to remote
-    if: ${{ github.repository == 'pantheon-systems/pantheon_secrets' }}
-    needs: [ build_test ]
-    env:
-      BRANCH: ${{ github.ref_name }}
-      WORKSPACE: ${{ github.workspace }}
-      DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-          if_key_exists: ignore
-      - name: Pushes to drupal.org repository
-        run: |
-          cd $WORKSPACE
-          git remote add drupalorg $DRUPAL_ORG_REMOTE
-          git push drupalorg $BRANCH
