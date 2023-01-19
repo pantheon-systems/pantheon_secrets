@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-export TERMINUS_ENV=$CIRCLE_BUILD_NUM
 
 # Change base env if drupal version is 10.
 if [ "$DRUPAL_VERSION" == "10" ]; then
@@ -19,13 +18,13 @@ git checkout -b $MULTIDEV_NAME
 
 composer -- config repositories.secrets vcs git@github.com:pantheon-systems/pantheon_secrets.git
 
-# dev-2.x does not match anything, should be 2.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
-export BRANCH_PART="dev-${CIRCLE_BRANCH}"
-if [ $CIRCLE_BRANCH = "1.x" ]; then
+# dev-1.x does not match anything, should be 1.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
+export BRANCH_PART="dev-${BRANCH}"
+if [ $BRANCH = "1.x" ]; then
   export BRANCH_PART="1.x-dev"
 fi
 # Composer require the given commit of this module
-composer -- require "drupal/pantheon_secrets:${BRANCH_PART}#${CIRCLE_SHA1}"
+composer -- require "drupal/pantheon_secrets:${BRANCH_PART}#${COMMIT_SHA}"
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_secrets/.git/
