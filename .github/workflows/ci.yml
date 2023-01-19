@@ -125,7 +125,7 @@ jobs:
 
       - name: Run tests
         run: |
-          # Do something here.
+          ./.ci/run-tests.sh
 
       - name: Cleanup
         if: ${{ always() && github.event.inputs.preserve_multidev == 0 }}
