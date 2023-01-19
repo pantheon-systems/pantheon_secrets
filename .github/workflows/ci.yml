@@ -69,7 +69,7 @@ jobs:
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
       TERMINUS_BASE_ENV: dev
-      MULTIDEV_NAME: d${{ matrix.drupal-version }}_${{ github.run_number }}
+      MULTIDEV_NAME: d${{ matrix.drupal-version }}-${{ github.run_number }}
       GIT_BRANCH: ${{ github.ref_name }}
     steps:
       - name: Checkout

@@ -2,7 +2,7 @@
 
 echo "Generating random key name and value..."
 export KEY_NAME=$(date | shasum | fold -w 8 | head -n 1)
-export KEY_NAME="${MULTIDEV_NAME}_${KEY_NAME}"
+export KEY_NAME="d${DRUPAL_VERSION}_${GITHUB_RUN_NUMBER}_${KEY_NAME}"
 export KEY_VALUE=$(date | shasum | fold -w 40 | head -n 1)
 
 echo "Key name: ${KEY_NAME}"
