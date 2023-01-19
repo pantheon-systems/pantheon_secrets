@@ -16,7 +16,7 @@ cd drupal-site
 
 git checkout -b $MULTIDEV_NAME
 
-composer -- config repositories.secrets vcs git@github.com:pantheon-systems/pantheon_secrets.git
+composer -- config repositories.secrets vcs https://github.com/pantheon-systems/pantheon_secrets.git
 
 # dev-1.x does not match anything, should be 1.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
 export BRANCH_PART="dev-${BRANCH}"
