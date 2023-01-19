@@ -124,6 +124,6 @@ jobs:
           # Do something here.
 
       - name: Cleanup
-        if: ${{ always() and github.event.inputs.preserve_multidev == 0 }}
+        if: ${{ always() && github.event.inputs.preserve_multidev == 0 }}
         run: |
           terminus env:delete ${TERMINUS_SITE}.${MULTIDEV_NAME} -y
