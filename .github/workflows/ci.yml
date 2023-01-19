@@ -10,6 +10,10 @@ on:
         description: Enable tmate debugging
         required: true
         default: "0"
+      preserve_multidev:
+        description: Preserve testing multidev environments
+        required: true
+        default: "0"
 jobs:
   linting:
     runs-on: ubuntu-latest
@@ -21,12 +25,10 @@ jobs:
       TZ: "/usr/share/zoneinfo/America/Los_Angeles"
       TERM: dumb
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
-      TERMINUS_SITE: ${{ secrets.TERMINUS_SITE }}
-      TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
-      GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      TERMINUS_SITE: ${{ vars.TERMINUS_SITE }}
+      GIT_EMAIL: ${{ vars.GIT_EMAIL }}
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       BASH_ENV: ~/.bashrc
     steps:
       - name: Checkout
@@ -59,15 +61,16 @@ jobs:
       TZ: "/usr/share/zoneinfo/America/Los_Angeles"
       TERM: dumb
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
-      TERMINUS_SITE: ${{ secrets.TERMINUS_SITE }}
-      TERMINUS_ORG: ${{ secrets.TERMINUS_ORG }}
-      GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      TERMINUS_SITE: ${{ vars.TERMINUS_SITE }}
+      GIT_EMAIL: ${{ vars.GIT_EMAIL }}
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SANDBOX_SSH_KEY: ${{ secrets.SANDBOX_SSH_KEY }}
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
+      TERMINUS_BASE_ENV: dev
+      MULTIDEV_NAME: d${{ matrix.drupal-version }}-${{ github.run_number }}
+      GIT_BRANCH: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -77,53 +80,54 @@ jobs:
           git config --global user.email "$GIT_EMAIL"
           git config --global user.name "Github Actions"
           git config --global --add safe.directory '*'
-          mkdir -p /root/.ssh && echo "${{ secrets.SSH_CONFIG }}" >> "/root/.ssh/config"
+          mkdir -p /root/.ssh && echo "${{ vars.SSH_CONFIG }}" >> "/root/.ssh/config"
 
       - name: Log in to Terminus
         run: |
-          terminus auth:login --email=$GIT_EMAIL --machine-token="$TERMINUS_TOKEN"
+          terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
           terminus auth:whoami
 
       - name: Setup SSH Keys
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SANDBOX_SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Composer install
-        run: composer install --ignore-platform-req=php
+      - name: Make multidev
+        run: ./.ci/create-multidev.sh &
 
       - name: Setup tmate session
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
         uses: mxschmitt/action-tmate@v3
 
+      - name: Add stuff to the site.
+        run: ./.ci/setup-drupal-repo.sh
+
+      - name: Install secrets plugin
+        run: terminus self:plugin:install pantheon-systems/terminus-secrets-manager-plugin
+
+      - name: Wait for multidev to be ready
+        timeout-minutes: 10
+        run: |
+          while [ ! -f multidev-made.txt ]
+          do
+            sleep 2
+          done
+          exit 0
+
+      - name: Push changes to the new multidev
+        run: git push --set-upstream origin $MULTIDEV_NAME -f
+        working-directory: drupal-site
+
+      - name: Install new module
+        run: |
+          terminus build:workflow:wait ${TERMINUS_SITE}.${MULTIDEV_NAME}
+          terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- en -y pantheon_secrets
+
       - name: Run tests
         run: |
-          export TERMINUS_ORG=$TERMINUS_ORG
-          # Do something here.
-          #./vendor/bin/robo test:full $DRUPAL_VERSION $TERMINUS_SITE
+          ./.ci/run-tests.sh
 
-  mirror_do:
-    runs-on: ubuntu-latest
-    name: Checkout & push to remote
-    if: ${{ github.repository == 'pantheon-systems/pantheon_secrets' }}
-    needs: [ build_test ]
-    env:
-      BRANCH: ${{ github.ref_name }}
-      WORKSPACE: ${{ github.workspace }}
-      DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-          if_key_exists: ignore
-      - name: Pushes to drupal.org repository
+      - name: Cleanup
+        if: ${{ always() && github.event.inputs.preserve_multidev == 0 }}
         run: |
-          cd $WORKSPACE
-          git remote add drupalorg $DRUPAL_ORG_REMOTE
-          git push drupalorg $BRANCH
+          terminus env:delete ${TERMINUS_SITE}.${MULTIDEV_NAME} -y
