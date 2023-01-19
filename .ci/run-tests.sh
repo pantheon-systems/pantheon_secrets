@@ -16,6 +16,7 @@ terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:save --label="${KEY_NAME
 
 echo "Retrieving key..."
 VALUE=$(terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:value-get ${KEY_NAME} | awk 'NR==4 {print $0}')
+VALUE=`echo $VALUE | sed -e 's/^[[:space:]]*//'`
 
 echo "Retrieved value: ${VALUE}"
 
