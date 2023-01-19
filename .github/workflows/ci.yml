@@ -10,6 +10,10 @@ on:
         description: Enable tmate debugging
         required: true
         default: "0"
+      preserve_multidev:
+        description: Preserve testing multidev environments
+        required: true
+        default: "0"
 jobs:
   linting:
     runs-on: ubuntu-latest
@@ -90,12 +94,12 @@ jobs:
       - name: Make multidev
         run: ./.ci/create-multidev.sh &
 
-      - name: Composer install
-        run: composer install --ignore-platform-req=php
-
       - name: Setup tmate session
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
         uses: mxschmitt/action-tmate@v3
+
+      - name: Add stuff to the site.
+        run: ./.ci/setup-drupal-repo.sh
 
       - name: Wait for multidev to be ready
         timeout-minutes: 10
@@ -106,6 +110,20 @@ jobs:
           done
           exit 0
 
+      - name: Push changes to the new multidev
+        run: git push --set-upstream origin $MULTIDEV_NAME -f
+        working-directory: drupal-site
+
+      - name: Install new module
+        run: |
+          terminus build:workflow:wait ${TERMINUS_SITE}.${MULTIDEV_NAME}
+          terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- en -y pantheon_secrets
+
       - name: Run tests
         run: |
           # Do something here.
+
+      - name: Cleanup
+        if: ${{ always() and github.event.inputs.preserve_multidev == 0 }}
+        run: |
+          terminus env:delete ${TERMINUS_SITE}.${MULTIDEV_NAME} -y
