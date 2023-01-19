@@ -65,7 +65,7 @@ jobs:
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
       TERMINUS_BASE_ENV: dev
-      MULTIDEV_NAME: drupal-${{ matrix.drupal-version }}-${{ github.run_number }}
+      MULTIDEV_NAME: d${{ matrix.drupal-version }}-${{ github.run_number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
