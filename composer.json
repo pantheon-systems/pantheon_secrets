@@ -26,8 +26,8 @@
     "minimum-stability": "dev",
     "scripts": {
         "code:lint": [
-            "vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer",
-            "vendor/bin/phpcs . "
+            "vendor/bin/phpcs src --standard=Drupal",
+            "vendor/bin/phpcs src --standard=DrupalPractice"
         ]
     },
     "config": {
