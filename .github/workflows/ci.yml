@@ -79,17 +79,17 @@ jobs:
           git config --global user.email "$GIT_EMAIL"
           git config --global user.name "Github Actions"
           git config --global --add safe.directory '*'
-          mkdir -p /root/.ssh && echo "${{ secrets.SSH_CONFIG }}" >> "/root/.ssh/config"
+          mkdir -p /root/.ssh && echo "${{ vars.SSH_CONFIG }}" >> "/root/.ssh/config"
 
       - name: Log in to Terminus
         run: |
           terminus auth:login -n --machine-token="$TERMINUS_TOKEN"
           terminus auth:whoami
 
-      #- name: Setup SSH Keys
-      #  uses: webfactory/ssh-agent@v0.5.3
-      #  with:
-      #    ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Setup SSH Keys
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Make multidev
         run: ./.ci/create-multidev.sh &
