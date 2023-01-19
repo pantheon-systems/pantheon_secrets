@@ -98,6 +98,7 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Wait for multidev to be ready
+        timeout-minutes: 10
         run: |
           while [ ! -f multidev-made.txt ]
           do
