@@ -102,6 +102,9 @@ jobs:
       - name: Add stuff to the site.
         run: ./.ci/setup-drupal-repo.sh
 
+      - name: Install secrets plugin
+        run: terminus self:plugin:install pantheon-systems/terminus-secrets-manager-plugin
+
       - name: Wait for multidev to be ready
         timeout-minutes: 10
         run: |
