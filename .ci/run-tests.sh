@@ -5,6 +5,9 @@ export KEY_NAME=$(date | shasum | fold -w 8 | head -n 1)
 export KEY_NAME="${MULTIDEV_NAME}_${KEY_NAME}"
 export KEY_VALUE=$(date | shasum | fold -w 40 | head -n 1)
 
+echo "Key name: ${KEY_NAME}"
+echo "Key value: ${KEY_VALUE}"
+
 echo "Setting secret..."
 terminus secret:set ${TERMINUS_SITE} --scope=web,user ${KEY_NAME} ${KEY_VALUE}
 
@@ -13,6 +16,8 @@ terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:save --label="${KEY_NAME
 
 echo "Retrieving key..."
 VALUE=$(terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:value-get ${KEY_NAME} | awk 'NR==4 {print $0}')
+
+echo "Retrieved value: ${VALUE}"
 
 echo "Checking key..."
 if [ "$VALUE" != "No value set." ]; then
