@@ -25,3 +25,6 @@ if [ "$VALUE" != "$KEY_VALUE" ]; then
   echo "Key value is not equal to original value"
   exit 1
 fi
+
+echo "Delete test secret..."
+terminus secret:delete ${TERMINUS_SITE} ${KEY_NAME}
