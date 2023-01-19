@@ -30,7 +30,6 @@ jobs:
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
       BASH_ENV: ~/.bashrc
-      BRANCH: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -71,6 +70,7 @@ jobs:
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
       TERMINUS_BASE_ENV: dev
       MULTIDEV_NAME: d${{ matrix.drupal-version }}-${{ github.run_number }}
+      GIT_BRANCH: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2

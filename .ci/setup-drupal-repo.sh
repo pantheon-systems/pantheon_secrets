@@ -19,8 +19,8 @@ git checkout -b $MULTIDEV_NAME
 composer -- config repositories.secrets vcs https://github.com/pantheon-systems/pantheon_secrets.git
 
 # dev-1.x does not match anything, should be 1.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
-export BRANCH_PART="dev-${BRANCH}"
-if [ $BRANCH = "1.x" ]; then
+export BRANCH_PART="dev-${GIT_BRANCH}"
+if [ $GIT_BRANCH = "1.x" ]; then
   export BRANCH_PART="1.x-dev"
 fi
 # Composer require the given commit of this module
