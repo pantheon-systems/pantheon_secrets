@@ -1,5 +1,5 @@
 {
-    "name": "drupal/pantheon_secrets",
+    "name": "pantheon-systems/pantheon_secrets",
     "description": "Pantheon secrets integration with the Key module",
     "type": "drupal-module",
     "repositories": [
