@@ -20,12 +20,6 @@ VALUE=$(terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:value-get ${KEY_
 echo "Retrieved value: ${VALUE}"
 
 echo "Checking key..."
-if [ "$VALUE" != "No value set." ]; then
-  echo "Key value is not empty"
-  exit 1
-fi
-
-echo "Compare key with original value..."
 if [ "$VALUE" != "$KEY_VALUE" ]; then
   echo "Key value is not equal to original value"
   exit 1
