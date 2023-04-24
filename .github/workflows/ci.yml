@@ -65,6 +65,7 @@ jobs:
       GIT_EMAIL: ${{ vars.GIT_EMAIL }}
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       COMMIT_SHA: ${{ github.sha }}
+      GITHUB_TOKEN: ${{ github.token }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
