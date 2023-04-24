@@ -13,10 +13,10 @@ use PantheonSystems\CustomerSecrets\CustomerSecretsClientInterface;
  * A key provider that allows a key to be retrieved from Pantheon secrets.
  *
  * @KeyProvider(
- *   id = "pantheon_secret",
- *   label = @Translation("Pantheon Secret"),
- *   description = @Translation("The Pantheon Secret key provider allows a key to be retrieved from a pantheon secret."),
- *   storage_method = "pantheon_secret",
+ *   id = "pantheon",
+ *   label = @Translation("Pantheon"),
+ *   description = @Translation("The Pantheon key provider allows a key to be retrieved from a Pantheon secret."),
+ *   storage_method = "pantheon",
  *   key_value = {
  *     "accepted" = FALSE,
  *     "required" = FALSE
@@ -46,7 +46,6 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
   public function defaultConfiguration() {
     return [
       'secret_name' => '',
-      'strip_line_breaks' => TRUE,
     ];
   }
 
@@ -60,13 +59,6 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
       '#description' => $this->t('Name of the secret set in Pantheon.'),
       '#required' => TRUE,
       '#default_value' => $this->getConfiguration()['secret_name'],
-    ];
-
-    $form['strip_line_breaks'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Strip trailing line breaks'),
-      '#description' => $this->t('Check this to remove any trailing line breaks from the variable. Leave unchecked if there is a chance that a line break could be a valid character in the key.'),
-      '#default_value' => $this->getConfiguration()['strip_line_breaks'],
     ];
 
     return $form;
@@ -106,13 +98,8 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
       return NULL;
     }
 
-    $secret_value = $secret->getValue();
+    return $secret->getValue();
 
-    if (isset($this->configuration['strip_line_breaks']) && $this->configuration['strip_line_breaks'] == TRUE) {
-      $secret_value = rtrim($secret_value, "\n\r");
-    }
-
-    return $secret_value;
   }
 
 }
