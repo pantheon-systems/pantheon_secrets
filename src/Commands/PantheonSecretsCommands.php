@@ -38,4 +38,5 @@ class PantheonSecretsCommands extends DrushCommands {
       $this->logger()->error(dt('Pantheon secrets sync failed.'));
     }
   }
+
 }

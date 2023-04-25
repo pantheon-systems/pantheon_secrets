@@ -18,18 +18,18 @@ class SecretsSyncer implements SecretsSyncerInterface {
    */
   protected CustomerSecretsClientInterface $secretsClient;
 
-    /**
-     * The entity type manager.
-     *
-     * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-     */
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Constructs a new SecretsSyncer object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *  The entity type manager.
+   *   The entity type manager.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
       $this->entityTypeManager = $entityTypeManager;
@@ -40,39 +40,39 @@ class SecretsSyncer implements SecretsSyncerInterface {
    * {@inheritdoc}
    */
   public function sync(): bool {
-      $secrets = $this->secretsClient->getSecrets();
-      $query = $this->entityTypeManager->getStorage('key')->getQuery();
-      $key_ids = $query->condition('key_provider', 'pantheon')->execute();
-      $keys = $this->entityTypeManager->getStorage('key')->loadMultiple($key_ids);
-      foreach ($secrets as $secret) {
-        if (!$this->secretInUse($secret->getName(), $keys)) {
-          // Create and save a new key item only if the secret is not in use.
-          $key = $this->entityTypeManager->getStorage('key')->create([
-            'id' => $secret->getName(),
-            'label' => $secret->getName(),
-            'key_provider' => 'pantheon',
-            'key_type' => 'authentication',
-            'key_provider_settings' => [
-              'secret_name' => $secret->getName(),
-            ],
-          ]);
-          $key->save();
-        }
+    $secrets = $this->secretsClient->getSecrets();
+    $query = $this->entityTypeManager->getStorage('key')->getQuery();
+    $key_ids = $query->condition('key_provider', 'pantheon')->execute();
+    $keys = $this->entityTypeManager->getStorage('key')->loadMultiple($key_ids);
+    foreach ($secrets as $secret) {
+      if (!$this->secretInUse($secret->getName(), $keys)) {
+        // Create and save a new key item only if the secret is not in use.
+        $key = $this->entityTypeManager->getStorage('key')->create([
+          'id' => $secret->getName(),
+          'label' => $secret->getName(),
+          'key_provider' => 'pantheon',
+          'key_type' => 'authentication',
+          'key_provider_settings' => [
+            'secret_name' => $secret->getName(),
+          ],
+        ]);
+        $key->save();
       }
-      return true;
+    }
+    return TRUE;
   }
 
   /**
    * Determine whether the given secret is in use on any of the given keys.
    */
   protected function secretInUse(string $secretName, array $keys): bool {
-      foreach ($keys as $key) {
-          $keyPlugin = $key->getPlugin('key_provider');
-          if ($keyPlugin->getConfiguration()['secret_name'] === $secretName) {
-              return true;
-          }
+    foreach ($keys as $key) {
+      $keyPlugin = $key->getPlugin('key_provider');
+      if ($keyPlugin->getConfiguration()['secret_name'] === $secretName) {
+        return TRUE;
       }
-      return false;
+    }
+    return FALSE;
   }
 
 }
