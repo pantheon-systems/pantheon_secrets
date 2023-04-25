@@ -12,7 +12,7 @@ echo "Setting secret..."
 terminus secret:set ${TERMINUS_SITE} --scope=web,user ${KEY_NAME} ${KEY_VALUE}
 
 echo "Creating key..."
-terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:save --label="${KEY_NAME}" --description="Test key" --key-type="authentication" --key-provider="pantheon_secret" --key-provider-settings="{\"secret_name\": \"${KEY_NAME}\"}" ${KEY_NAME}
+terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:save --label="${KEY_NAME}" --description="Test key" --key-type="authentication" --key-provider="pantheon" --key-provider-settings="{\"secret_name\": \"${KEY_NAME}\"}" ${KEY_NAME}
 
 echo "Retrieving key..."
 VALUE=$(terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- key:value-get ${KEY_NAME} | awk 'NR==4 {print $0}')
