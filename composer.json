@@ -17,12 +17,6 @@
         "squizlabs/php_codesniffer": "^3.7",
         "drupal/coder": "^8.3"
     },
-    "authors": [
-        {
-            "name": "Kevin Porras",
-            "email": "kevin.porras@pantheon.io"
-        }
-    ],
     "minimum-stability": "dev",
     "scripts": {
         "code:lint": [
