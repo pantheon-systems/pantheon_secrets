@@ -32,8 +32,8 @@ class SecretsSyncer implements SecretsSyncerInterface {
    *   The entity type manager.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
-      $this->entityTypeManager = $entityTypeManager;
-      $this->secretsClient = CustomerSecrets::create()->getClient();
+    $this->entityTypeManager = $entityTypeManager;
+    $this->secretsClient = CustomerSecrets::create()->getClient();
   }
 
   /**
