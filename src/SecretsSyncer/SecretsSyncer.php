@@ -39,11 +39,12 @@ class SecretsSyncer implements SecretsSyncerInterface {
   /**
    * {@inheritdoc}
    */
-  public function sync(): bool {
+  public function sync(): array {
     $secrets = $this->secretsClient->getSecrets();
     $query = $this->entityTypeManager->getStorage('key')->getQuery();
     $key_ids = $query->condition('key_provider', 'pantheon')->execute();
     $keys = $this->entityTypeManager->getStorage('key')->loadMultiple($key_ids);
+    $saved = [];
     foreach ($secrets as $secret) {
       if (!$this->secretInUse($secret->getName(), $keys)) {
         // Create and save a new key item only if the secret is not in use.
@@ -57,9 +58,10 @@ class SecretsSyncer implements SecretsSyncerInterface {
           ],
         ]);
         $key->save();
+        $saved[] = $key->id();
       }
     }
-    return TRUE;
+    return $saved;
   }
 
   /**

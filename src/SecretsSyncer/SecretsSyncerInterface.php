@@ -9,7 +9,10 @@ interface SecretsSyncerInterface {
 
   /**
    * Sync secrets from Pantheon to key entities.
+   *
+   * @return array
+   *   An array of saved key entity ids.
    */
-  public function sync(): bool;
+  public function sync(): array;
 
 }

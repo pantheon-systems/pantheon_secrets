@@ -30,12 +30,18 @@ class PantheonSecretsCommands extends DrushCommands {
    * @command pantheon-secrets:sync
    */
   public function sync() {
-    $success = $this->secretsSyncer->sync();
-    if ($success) {
-      $this->logger()->success(dt('Pantheon secrets synced successfully.'));
+    try {
+      $added = $this->secretsSyncer->sync();
+      if (empty($added)) {
+        $this->logger()->notice(dt('No new secrets to sync.'));
+        return self::EXIT_SUCCESS;
+      }
+      $this->logger()->success(dt('Synced secrets: @secrets', ['@secrets' => implode(', ', $added)]));
+      return self::EXIT_SUCCESS;
     }
-    else {
-      $this->logger()->error(dt('Pantheon secrets sync failed.'));
+    catch (\Exception $e) {
+      $this->logger()->error(dt('An error ocurred adding secrets: @error', ['@error' => $e->getMessage()]));
+      return self::EXIT_FAILURE;
     }
   }
 
