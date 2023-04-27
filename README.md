@@ -34,7 +34,7 @@ This module provides [Drupal](https://drupal.org) integration with the Secrets E
 To require this module in your composer file:
 
 ```
-composer require pantheon-systems/pantheon_secrets:^1 --prefer-dist
+composer require drupal/pantheon_secrets:^1 --prefer-dist
 ```
 
 Install the module and push an updated `composer.lock` file to your Pantheon environment.
