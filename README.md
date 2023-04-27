@@ -1,5 +1,4 @@
-Pantheon Secrets
-=================
+# Pantheon Secrets
 
 Pantheon Secrets integration with the [Key](https://drupal.org/project/key) module.
 
@@ -12,6 +11,8 @@ Pantheon Secrets integration with the [Key](https://drupal.org/project/key) modu
 This module is for you if you meet the following requirements:
 
 * Using Drupal >= 9.4
+
+* Use PHP >= 8.0
 
 * Part of the Secrets EA Program
 

@@ -2,7 +2,7 @@
 
 Please look at the [module documentation](../README.md) if you have not done so yet.
 
-In this guide we will go over an end to end example on how to setup secrets for a given site and how to use those secrets on a module that integrates with the Key module. For this example, we will use the [Sendgrid API](https://www.drupal.org/project/sendgrid_api) module.
+In this guide we will go over an end to end example on how to setup secrets for a given site and how to use those secrets on a module that integrates with the Key module. For this example, we will use the [Sendgrid API](https://www.drupal.org/project/sendgrid_api) and [Sendgrid Mailer](https://www.drupal.org/project/sendgrid_mailer) modules.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ In this guide we will go over an end to end example on how to setup secrets for 
 1) Install the required modules in your Drupal site and push the changes to Pantheon:
 
     ```
-    composer require drupal/pantheon_secrets drupal/sendgrid_api
+    composer require drupal/pantheon_secrets drupal/sendgrid_api drupal/sendgrid_mailer
     git add composer.json composer.lock
     git commit -m "Add required modules."
     git push
@@ -24,7 +24,7 @@ In this guide we will go over an end to end example on how to setup secrets for 
 1) Enable the modules:
 
     ```
-    terminus drush <site>.<env> -- en -y pantheon_secrets sendgrid_api
+    terminus drush <site>.<env> -- en -y pantheon_secrets sendgrid_api sendgrid_mailer
     ```
 
 1) Make sure your Sendgrid account is correctly configured and allows sending email.
@@ -61,6 +61,8 @@ In this guide we will go over an end to end example on how to setup secrets for 
 1) Go to the Sendgrid API Configuration page (/admin/config/services/sendgrid) and select your Key item
 
     ![Screenshot of Sendgrid API Configuration page in Drupal UI](sendgrid-config.png)
+
+1) Make sure your site "Email Address" (/admin/config/system/site-information) matches a verified Sender Identity in Sendgrid
 
 1) Go to the Sendgrid email test page (/admin/config/services/sendgrid/test) and test your Sendgrid integration by sending a test email
 
