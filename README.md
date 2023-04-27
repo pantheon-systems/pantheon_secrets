@@ -11,17 +11,11 @@ Pantheon Secrets integration with the [Key](https://drupal.org/project/key) modu
 
 This module is for you if you meet the following requirements:
 
-* Using Drupal 9.4/10
+* Using Drupal >= 9.4
 
 * Part of the Secrets EA Program
 
 * Hosting the Drupal site on Pantheon's platform
-
-* Your site uses `composer` to install modules and upgrade Drupal core using one of the following integrations:
-
-  * Pantheon's integrated composer (`build step: true` in your pantheon.yml)
-
-  * A Continuous Integration service like Circle CI or Travis
 
 * Have Dashboard access to the platform (necessary to deploy code changes)
 
@@ -44,13 +38,27 @@ composer require pantheon-systems/pantheon_secrets:^1 --prefer-dist
 
 Install the module and push an updated `composer.lock` file to your Pantheon environment.
 
-## Setup
+## Usage
 
 1) Use terminus to set some secrets like this:
 
     ```
-    terminus secret:set <site> --scope=web <secret_name> <secret_value>
+    terminus secret:set <site> --scope=web --type=runtime <secret_name> <secret_value>
     ```
+    Please note that you should be using scope "web" for secrets to be available to the Drupal application.
 
-1) Add a new key through the Key module UI. Select Pantheon Secret as the key provider
-1) Use the key where it is needed.
+1) Now that the secret is available, you could add the corresponding Key entity in one of the different available ways:
+ 
+    1) Add a new key through the Key module UI. Select Pantheon Secret as the key provider and your secret name from the dropdown
+    1) Go to /admin/config/system/keys/pantheon and click on the "Sync Keys" button to get all of the available secrets into Key entities.
+    1) Use the provided drush command to sync all of your secrets into Key entities:
+        ```
+        terminus drush <site>.<env> -- pantheon-secrets:sync
+        ```
+1) Use the Key where it is needed.
+
+See [our detailed example](docs/example.md) for an end to end example on how to set things up.
+
+## Feedback and collaboration
+
+For real time discussion of the module find Pantheon developers in our [Community Slack](https://docs.pantheon.io/pantheon-community). Bug reports and feature requests should be posted in the drupal.org issue queue. For code changes, please submit pull requests against the GitHub repository rather than posting patches to drupal.org.
