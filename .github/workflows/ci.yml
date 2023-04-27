@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Checkout & push to remote
     needs: [build_test]
-    if: ${{ github.repository == 'pantheon-systems/pantheon_secrets' && (github.ref_type == tag || github.ref == 'ref/heads/1.x') }}
+    if: ${{ github.repository == 'pantheon-systems/pantheon_secrets' && (github.ref_type == 'tag' || github.ref == 'ref/heads/1.x') }}
     env:
       BRANCH: ${{ github.ref_name }}
       WORKSPACE: ${{ github.workspace }}
