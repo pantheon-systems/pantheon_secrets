@@ -3,7 +3,7 @@ Pantheon Secrets
 
 Pantheon Secrets integration with the [Key](https://drupal.org/project/key) module.
 
-[![Pantheon Secrets](https://github.com/pantheon-systems/pantheon_secrets/actions/workflows/ci.yml/badge.svg?branch=1.x)](https://github.com/pantheon-systems/pantheon_secrets/actions/workflows/ci.yml)
+[![Pantheon Secrets](https://github.com/pantheon-systems/pantheon_secrets/actions/workflows/ci.yml/badge.svg?branch=1.0.x)](https://github.com/pantheon-systems/pantheon_secrets/actions/workflows/ci.yml)
 
 [![Limited Availability](https://img.shields.io/badge/Pantheon-Limited_Availability-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#limited-availability)
 
