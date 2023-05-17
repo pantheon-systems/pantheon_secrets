@@ -26,9 +26,10 @@ export SECRETS_VERSION=$GIT_BRANCH
 if [ $GIT_REF_TYPE = "branch" ]; then
   # dev-1.0.x does not match anything, should be 1.0.x-dev as per https://getcomposer.org/doc/articles/aliases.md#branch-alias.
   export BRANCH_PART="dev-${GIT_BRANCH}"
-  if [ $GIT_BRANCH = "1.0.x" ]; then
-    export BRANCH_PART="1.0.x-dev"
+  if [[ $GIT_BRANCH == *".x" ]]; then
+    export BRANCH_PART="${GIT_BRANCH}-dev"
   fi
+
   SECRETS_VERSION="${BRANCH_PART}#${COMMIT_SHA}"
 fi
 
