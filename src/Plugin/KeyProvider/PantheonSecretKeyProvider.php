@@ -63,7 +63,34 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
       '#default_value' => $this->getConfiguration()['secret_name'],
     ];
 
+    if ($secret_name = $this->getConfiguration()['secret_name']) {
+      $form['secret_value'] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Secret value'),
+        '#description' => $this->t('The secret value is hidden for security reasons.'),
+        '#disabled' => TRUE,
+        '#default_value' => $this->maskSecretValue($this->secretsClient->getSecret($secret_name)->getValue()),
+      ];
+    }
+
     return $form;
+  }
+
+  /**
+   * Mask secret value.
+   */
+  private function maskSecretValue($secret_value) {
+    $kept_chars_options = [4, 2, 1];
+    $value_length = strlen($secret_value);
+    $masked_value = '';
+    foreach ($kept_chars_options as $kept_chars) {
+      if (($kept_chars + 2) > $value_length) {
+        continue;
+      }
+      return str_repeat('*', $value_length - $kept_chars) . substr($secret_value, -$kept_chars);
+    }
+    // If it still hasn't returned, then keep only 1 char.
+    return str_repeat('*', $value_length - 1) . substr($secret_value, -1);
   }
 
   /**
