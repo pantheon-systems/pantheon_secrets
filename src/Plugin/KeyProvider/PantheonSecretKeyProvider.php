@@ -3,12 +3,12 @@
 namespace Drupal\pantheon_secrets\Plugin\KeyProvider;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\key\Plugin\KeyProviderBase;
-use Drupal\key\Plugin\KeyPluginFormInterface;
 use Drupal\key\KeyInterface;
+use Drupal\key\Plugin\KeyPluginDeleteFormInterface;
+use Drupal\key\Plugin\KeyPluginFormInterface;
+use Drupal\key\Plugin\KeyProviderBase;
 use PantheonSystems\CustomerSecrets\CustomerSecrets;
 use PantheonSystems\CustomerSecrets\CustomerSecretsClientInterface;
-use Drupal\key\Plugin\KeyPluginDeleteFormInterface;
 
 /**
  * A key provider that allows a key to be retrieved from Pantheon secrets.
