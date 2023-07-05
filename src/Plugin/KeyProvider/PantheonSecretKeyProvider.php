@@ -82,7 +82,6 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
   private function maskSecretValue($secret_value) {
     $kept_chars_options = [4, 2, 1];
     $value_length = strlen($secret_value);
-    $masked_value = '';
     foreach ($kept_chars_options as $kept_chars) {
       if (($kept_chars + 2) > $value_length) {
         continue;
