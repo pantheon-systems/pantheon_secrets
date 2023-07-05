@@ -2,8 +2,8 @@
 
 namespace Drupal\pantheon_secrets\Commands;
 
-use Drush\Commands\DrushCommands;
 use Drupal\pantheon_secrets\SecretsSyncer\SecretsSyncerInterface;
+use Drush\Commands\DrushCommands;
 
 /**
  * Drush command file.
