@@ -2,9 +2,9 @@
 
 namespace Drupal\pantheon_secrets\SecretsSyncer;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use PantheonSystems\CustomerSecrets\CustomerSecrets;
 use PantheonSystems\CustomerSecrets\CustomerSecretsClientInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Sync secrets from Pantheon to key entities.
