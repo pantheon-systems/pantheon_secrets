@@ -5,6 +5,7 @@ namespace Drupal\pantheon_secrets\SecretsSyncer;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use PantheonSystems\CustomerSecrets\CustomerSecrets;
 use PantheonSystems\CustomerSecrets\CustomerSecretsClientInterface;
+use Drupal\Component\Transliteration\TransliterationInterface;
 
 /**
  * Sync secrets from Pantheon to key entities.
@@ -26,14 +27,33 @@ class SecretsSyncer implements SecretsSyncerInterface {
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * The transliteration manager.
+   *
+   * @var \Drupal\Component\Transliteration\TransliterationInterface
+   */
+  protected TransliterationInterface $transliteration;
+
+  /**
    * Constructs a new SecretsSyncer object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Component\Transliteration\TransliterationInterface $transliteration
+   *   The transliteration manager.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, TransliterationInterface $transliteration) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->transliteration = $transliteration;
     $this->secretsClient = CustomerSecrets::create()->getClient();
+  }
+
+  /**
+   * Get machine name for a given key.
+   */
+  protected function getMachineName(string $secretName): string {
+    $transliterated = $this->transliteration->transliterate($secretName);
+    $transliterated = preg_replace('@[^a-z0-9_.]+@', '_', $transliterated);
+    return $transliterated;
   }
 
   /**
@@ -49,7 +69,7 @@ class SecretsSyncer implements SecretsSyncerInterface {
       if (!$this->secretInUse($secret->getName(), $keys)) {
         // Create and save a new key item only if the secret is not in use.
         $key = $this->entityTypeManager->getStorage('key')->create([
-          'id' => $secret->getName(),
+          'id' => $this->getMachineName($secret->getName()),
           'label' => $secret->getName(),
           'key_provider' => 'pantheon',
           'key_type' => 'authentication',
