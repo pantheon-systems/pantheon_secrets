@@ -2,10 +2,10 @@
 
 namespace Drupal\pantheon_secrets\SecretsSyncer;
 
+use Drupal\Component\Transliteration\TransliterationInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use PantheonSystems\CustomerSecrets\CustomerSecrets;
 use PantheonSystems\CustomerSecrets\CustomerSecretsClientInterface;
-use Drupal\Component\Transliteration\TransliterationInterface;
 
 /**
  * Sync secrets from Pantheon to key entities.
