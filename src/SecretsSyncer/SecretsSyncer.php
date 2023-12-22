@@ -51,7 +51,7 @@ class SecretsSyncer implements SecretsSyncerInterface {
    * Get machine name for a given key.
    */
   protected function getMachineName(string $secretName): string {
-    $transliterated = $this->transliteration->transliterate($secretName);
+    $transliterated = $this->transliteration->transliterate(strtolower($secretName));
     $transliterated = preg_replace('@[^a-z0-9_.]+@', '_', $transliterated);
     return $transliterated;
   }
