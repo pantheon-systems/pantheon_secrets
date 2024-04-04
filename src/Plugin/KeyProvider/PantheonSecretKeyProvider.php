@@ -47,6 +47,7 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
   public function defaultConfiguration() {
     return [
       'secret_name' => '',
+      'base64_encoded' => false,
     ];
   }
 
@@ -72,6 +73,13 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
         '#default_value' => $this->maskSecretValue($this->secretsClient->getSecret($secret_name)->getValue()),
       ];
     }
+
+    $form['base64_encoded'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Base64 encoded'),
+      '#description' => $this->t('Check this box if the secret is base64 encoded.'),
+      '#default_value' => $this->getConfiguration()['base64_encoded'],
+    ];
 
     return $form;
   }
@@ -143,8 +151,12 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
       return NULL;
     }
 
-    return $secret->getValue();
+    $value = $secret->getValue();
+    if ($this->configuration['base64_encoded']) {
+      $value = base64_decode($value);
+    }
 
+    return $value;
   }
 
   /**
