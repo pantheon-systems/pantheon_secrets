@@ -47,7 +47,7 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
   public function defaultConfiguration() {
     return [
       'secret_name' => '',
-      'base64_encoded' => false,
+      'base64_encoded' => FALSE,
     ];
   }
 
