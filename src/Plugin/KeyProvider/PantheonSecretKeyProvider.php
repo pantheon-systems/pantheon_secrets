@@ -152,7 +152,8 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
     }
 
     $value = $secret->getValue();
-    if ($this->configuration['base64_encoded']) {
+    // Check if 'base64_encoded' key exists in configuration
+    if (isset($this->configuration['base64_encoded']) && $this->configuration['base64_encoded']) {
       $value = base64_decode($value);
     }
 
