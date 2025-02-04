@@ -50,7 +50,7 @@ jobs:
   build_test:
     strategy:
       matrix:
-        drupal-version: [ 9, 10 ]
+        drupal-version: [ 9, 10, 11 ]
       fail-fast: false
     runs-on: ubuntu-latest
     container:
