@@ -6,6 +6,11 @@ if [ "$DRUPAL_VERSION" == "10" ]; then
   export TERMINUS_BASE_ENV=drupal10
 fi
 
+# Change base env if drupal version is 10.
+if [ "$DRUPAL_VERSION" == "11" ]; then
+  export TERMINUS_BASE_ENV=drupal11
+fi
+
 if [ "$TERMINUS_BASE_ENV" = "dev" ]; then
   export TERMINUS_BASE_ENV=master
 fi
@@ -38,6 +43,10 @@ composer -- require "drupal/pantheon_secrets:${SECRETS_VERSION}"
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_secrets/.git/
+
+# Add dummy change to update pantheon.yml.
+echo "" >> pantheon.yml
+echo "# This is a dummy change to update pantheon.yml." >> pantheon.yml
 
 # Make a git commit
 git add .

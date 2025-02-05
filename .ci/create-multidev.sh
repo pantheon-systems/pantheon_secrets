@@ -5,6 +5,10 @@ if [ "$DRUPAL_VERSION" == "10" ]; then
   export TERMINUS_BASE_ENV=drupal10
 fi
 
+if [ "$DRUPAL_VERSION" == "11" ]; then
+  export TERMINUS_BASE_ENV=drupal11
+fi
+
 terminus env:create ${TERMINUS_SITE}.${TERMINUS_BASE_ENV} ${MULTIDEV_NAME}
 if [ $? -ne 0 ]; then
   echo "Failed to create multidev environment"
