@@ -122,7 +122,7 @@ jobs:
 
       - name: Install new module
         run: |
-          terminus build:workflow:wait ${TERMINUS_SITE}.${MULTIDEV_NAME}
+          terminus build:workflow:wait --max=300 ${TERMINUS_SITE}.${MULTIDEV_NAME}
           terminus drush ${TERMINUS_SITE}.${MULTIDEV_NAME} -- en -y pantheon_secrets
 
       - name: Run tests
