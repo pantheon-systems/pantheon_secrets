@@ -45,7 +45,7 @@ composer -- require "drupal/pantheon_secrets:${SECRETS_VERSION}"
 rm -rf web/modules/contrib/pantheon_secrets/.git/
 
 # Add dummy change to update pantheon.yml.
-echo '' >> pantheon.yml
+echo '# Please work' >> pantheon.yml
 
 # Make a git commit
 git add .
