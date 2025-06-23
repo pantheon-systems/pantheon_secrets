@@ -78,7 +78,7 @@ class PantheonSecretKeyProvider extends KeyProviderBase implements KeyPluginForm
       '#type' => 'checkbox',
       '#title' => $this->t('Base64 encoded'),
       '#description' => $this->t('Check this box if the secret is base64 encoded.'),
-      '#default_value' => $this->getConfiguration()['base64_encoded'],
+      '#default_value' => $this->getConfiguration()['base64_encoded'] ?? $this->defaultConfiguration()['base64_encoded'],
     ];
 
     return $form;
