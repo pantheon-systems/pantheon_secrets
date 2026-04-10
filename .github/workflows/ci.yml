@@ -1,4 +1,8 @@
 name: Pantheon Secrets
+
+permissions:
+  contents: read
+
 on:
   push:
   repository_dispatch:
@@ -32,7 +36,7 @@ jobs:
       BASH_ENV: ~/.bashrc
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
       - name: Composer install
         run: composer install --ignore-platform-req=php
@@ -44,7 +48,7 @@ jobs:
     name: PHP Compatibility
     steps:
       - name: PHPCompatibility
-        uses: pantheon-systems/phpcompatibility-action@v1
+        uses: pantheon-systems/phpcompatibility-action@7bf1b2881e207c80ad4569874ceee225f59537d1 # v1.1.1
         with:
           test-versions: 7.4-
   build_test:
@@ -75,7 +79,7 @@ jobs:
       GIT_REF_TYPE: ${{ github.ref_type }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
       - name: Login
         run: |
@@ -90,7 +94,7 @@ jobs:
           terminus auth:whoami
 
       - name: Setup SSH Keys
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@5f066a372ec13036ab7cb9a8adf18c936f8d2043 # v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -99,7 +103,7 @@ jobs:
 
       - name: Setup tmate session
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
-        uses: mxschmitt/action-tmate@v3
+        uses: mxschmitt/action-tmate@c0afd6f790e3a5564914980036ebf83216678101 # v3
 
       - name: Add stuff to the site.
         run: ./.ci/setup-drupal-repo.sh
@@ -144,11 +148,11 @@ jobs:
       DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           fetch-depth: 0
       - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@87a8f067114a8ce263df83e9ed5c849953548bc3 # v2.8.1
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
