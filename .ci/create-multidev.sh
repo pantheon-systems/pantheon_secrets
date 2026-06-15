@@ -56,9 +56,6 @@ composer config -g github-oauth.github.com "$GITHUB_TOKEN"
 composer config repositories.secrets vcs https://github.com/pantheon-systems/pantheon_secrets.git
 
 # Require this branch/tag of the module. The VCS repo resolves it from GitHub.
-# The fixture site pins config.platform.php (currently 7.4) for its own resolution;
-# the module declares php >=8.2 and the multidev actually runs the injected
-# php_version, so bypass the build-time platform check here.
 composer require "drupal/pantheon_secrets:${GIT_CONSTRAINT}" --ignore-platform-req=php
 
 # Pantheon's git-based deploy rejects nested .git dirs; detect flat vs nested docroot.
