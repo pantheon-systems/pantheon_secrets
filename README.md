@@ -12,7 +12,7 @@ This module is for you if you meet the following requirements:
 
 * Using Drupal >= 10
 
-* Use PHP >= 8.1
+* Use PHP >= 8.2
 
 * Part of the Secrets EA Program
 

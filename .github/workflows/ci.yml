@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.1", "8.5" ]
+        php-version: [ "8.2", "8.5" ]
     name: Code linting (PHP ${{ matrix.php-version }})
     steps:
       - name: Checkout
@@ -61,23 +61,23 @@ jobs:
       - name: PHPCompatibility
         uses: pantheon-systems/phpcompatibility-action@44be5a8381691b9a209404a3f45df8254f1ce08f # v1.1.2
         with:
-          test-versions: 8.1-
+          test-versions: 8.2-
 
   build_test:
     # Test combinations (floor + ceiling per Drupal version):
-    #   Drupal 10: PHP 8.1, 8.4
+    #   Drupal 10: PHP 8.2, 8.4
     #   Drupal 11: PHP 8.3, 8.5
     strategy:
       matrix:
         drupal-version: [ 10, 11 ]
-        php-version: [ "8.1", "8.3", "8.4", "8.5" ]
+        php-version: [ "8.2", "8.3", "8.4", "8.5" ]
         exclude:
           - drupal-version: 10
             php-version: "8.3"
           - drupal-version: 10
             php-version: "8.5"
           - drupal-version: 11
-            php-version: "8.1"
+            php-version: "8.2"
           - drupal-version: 11
             php-version: "8.4"
       fail-fast: false
@@ -93,8 +93,8 @@ jobs:
       GITHUB_RUN_NUMBER: ${{ github.run_number }}
       GITHUB_TOKEN: ${{ github.token }}
       COMMIT_SHA: ${{ github.sha }}
-      # Terminus 4.x needs PHP 8.2+; the 8.1 leg must use 3.x.
-      TERMINUS_VERSION: ${{ matrix.php-version >= '8.2' && '4.1.4' || '3.5.1' }}
+      # All build_test legs are >= 8.2, so Terminus 4.x is always valid.
+      TERMINUS_VERSION: '4.1.4'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
