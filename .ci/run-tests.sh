@@ -32,7 +32,8 @@ terminus drush "${SITE_ENV}" -- pantheon-secrets:sync
 
 echo "Retrieving key..."
 VALUE=$(terminus drush "${SITE_ENV}" -- key:value-get "${KEY_NAME}" | awk 'NR==4 {print $0}')
-VALUE=$(echo "$VALUE" | sed -e 's/^[[:space:]]*//')
+# Trim leading AND trailing whitespace (drush renders the value in a padded table cell).
+VALUE=$(echo "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
 echo "Checking key..."
 if [ "$VALUE" != "$KEY_VALUE" ]; then

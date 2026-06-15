@@ -40,11 +40,15 @@ fi
 # Create the multidev from the base environment for this Drupal major.
 terminus multidev:create "$TERMINUS_SITE.$BASE_ENV" "$MULTIDEV"
 
-# Clone the site repo at the base branch.
+# Clone the site repo at the base branch and create the multidev branch FROM it.
+# Pantheon forks a new multidev's git branch from `master` (which can be stale),
+# so we must base the pushed code on the per-Drupal-major branch instead, then
+# force-push it onto the multidev branch below. Using `-b` (not a bare checkout)
+# is what makes the per-major code win over the master fork.
 GIT_URL=$(terminus connection:info "$TERMINUS_SITE.dev" --field=git_url)
 GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git clone "$GIT_URL" --branch "$BASE_ENV" pantheon-site
 cd pantheon-site
-git checkout "$MULTIDEV"
+git checkout -b "$MULTIDEV"
 
 # Allow composer to read this module from GitHub. The runner's modern composer
 # accepts the ghs_ Actions token (the old build container's composer did not).
@@ -88,7 +92,7 @@ cd ..
 # Wait for Pantheon to finish building and deploying the pushed code.
 # (Core terminus workflow:wait; build:workflow:wait was a build-tools plugin
 # command bundled only in the deprecated quay build container.)
-terminus workflow:wait "$TERMINUS_SITE.$MULTIDEV" --max=300
+terminus workflow:wait "$TERMINUS_SITE.$MULTIDEV" --max=600
 
 # Enable the module.
 terminus drush "$TERMINUS_SITE.$MULTIDEV" -- en -y pantheon_secrets
