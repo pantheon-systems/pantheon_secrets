@@ -86,7 +86,9 @@ git push --set-upstream origin "$MULTIDEV" -f
 cd ..
 
 # Wait for Pantheon to finish building and deploying the pushed code.
-terminus build:workflow:wait --max=300 "$TERMINUS_SITE.$MULTIDEV"
+# (Core terminus workflow:wait; build:workflow:wait was a build-tools plugin
+# command bundled only in the deprecated quay build container.)
+terminus workflow:wait "$TERMINUS_SITE.$MULTIDEV" --max=300
 
 # Enable the module.
 terminus drush "$TERMINUS_SITE.$MULTIDEV" -- en -y pantheon_secrets
