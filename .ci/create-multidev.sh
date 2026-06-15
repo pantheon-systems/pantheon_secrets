@@ -52,18 +52,28 @@ composer config -g github-oauth.github.com "$GITHUB_TOKEN"
 composer config repositories.secrets vcs https://github.com/pantheon-systems/pantheon_secrets.git
 
 # Require this branch/tag of the module. The VCS repo resolves it from GitHub.
-composer require "drupal/pantheon_secrets:${GIT_CONSTRAINT}"
+# The fixture site pins config.platform.php (currently 7.4) for its own resolution;
+# the module declares php >=8.2 and the multidev actually runs the injected
+# php_version, so bypass the build-time platform check here.
+composer require "drupal/pantheon_secrets:${GIT_CONSTRAINT}" --ignore-platform-req=php
 
 # Pantheon's git-based deploy rejects nested .git dirs; detect flat vs nested docroot.
 rm -rf web/modules/contrib/pantheon_secrets/.git/ 2>/dev/null || true
 rm -rf modules/contrib/pantheon_secrets/.git/ 2>/dev/null || true
 
-# Force the multidev PHP version so the functional test runs on the matrix PHP,
-# not the base site's default. The multidev runtime PHP comes from pantheon.yml.
+# Set PHP version in pantheon.yml if specified.
+# Without this, tests run under the base site's default PHP, not the matrix PHP.
+# (Same approach as the other standardized Drupal modules, e.g. content-publisher.)
 if [ -n "$PHP_VERSION" ]; then
-  if grep -q "php_version:" pantheon.yml; then
-    sed -i "s/php_version:.*/php_version: ${PHP_VERSION}/" pantheon.yml
+  echo "Setting PHP version to ${PHP_VERSION}..."
+  if [ -f pantheon.yml ]; then
+    if grep -q "php_version:" pantheon.yml; then
+      sed -i "s/php_version:.*/php_version: ${PHP_VERSION}/" pantheon.yml
+    else
+      echo "php_version: ${PHP_VERSION}" >> pantheon.yml
+    fi
   else
+    echo "api_version: 1" > pantheon.yml
     echo "php_version: ${PHP_VERSION}" >> pantheon.yml
   fi
 fi
