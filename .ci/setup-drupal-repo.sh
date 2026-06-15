@@ -38,15 +38,23 @@ if [ $GIT_REF_TYPE = "branch" ]; then
   SECRETS_VERSION="${BRANCH_PART}#${COMMIT_SHA}"
 fi
 
-# Composer require the given commit of this module
-composer -- require "drupal/pantheon_secrets:${SECRETS_VERSION}"
+# Composer require the given commit of this module.
+# The build container PHP is older than the module's declared floor; the real PHP
+# is enforced on the multidev (set below), so skip the platform check here.
+composer -- require "drupal/pantheon_secrets:${SECRETS_VERSION}" --ignore-platform-req=php
 
 # Don't commit a submodule
 rm -rf web/modules/contrib/pantheon_secrets/.git/
 
-# Add dummy change to update pantheon.yml.
-echo "" >> pantheon.yml
-echo "# This is a dummy change to update pantheon.yml." >> pantheon.yml
+# Set the multidev's PHP version so the functional test runs on the matrix PHP,
+# not the base site's default. The multidev runtime PHP comes from pantheon.yml.
+if [ -n "$PHP_VERSION" ]; then
+  if grep -q "php_version:" pantheon.yml; then
+    sed -i "s/php_version:.*/php_version: ${PHP_VERSION}/" pantheon.yml
+  else
+    echo "php_version: ${PHP_VERSION}" >> pantheon.yml
+  fi
+fi
 
 # Make a git commit
 git add .

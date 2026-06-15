@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=8.2",
         "drupal/key": "^1.16",
         "pantheon-systems/customer-secrets-php-sdk": "^1.0"
     },

@@ -48,19 +48,32 @@ jobs:
     name: PHP Compatibility
     steps:
       - name: PHPCompatibility
-        uses: pantheon-systems/phpcompatibility-action@7bf1b2881e207c80ad4569874ceee225f59537d1 # v1.1.1
+        uses: pantheon-systems/phpcompatibility-action@44be5a8381691b9a209404a3f45df8254f1ce08f # v1.1.2
         with:
-          test-versions: 7.4-
+          test-versions: 8.2-
   build_test:
+    # Test combinations (floor + ceiling per Drupal version):
+    #   Drupal 10: PHP 8.2, 8.4
+    #   Drupal 11: PHP 8.3, 8.5
     strategy:
       matrix:
-        drupal-version: [ 9, 10, 11 ]
+        drupal-version: [ 10, 11 ]
+        php-version: [ "8.2", "8.3", "8.4", "8.5" ]
+        exclude:
+          - drupal-version: 10
+            php-version: "8.3"
+          - drupal-version: 10
+            php-version: "8.5"
+          - drupal-version: 11
+            php-version: "8.2"
+          - drupal-version: 11
+            php-version: "8.4"
       fail-fast: false
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php8.1
       options: --user root
-    name: Build and test (Drupal ${{ matrix.drupal-version }})
+    name: Build and test (Drupal ${{ matrix.drupal-version }}, PHP ${{ matrix.php-version }})
     env:
       TZ: "/usr/share/zoneinfo/America/Los_Angeles"
       TERM: dumb
@@ -73,8 +86,8 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       BASH_ENV: ~/.bashrc
       DRUPAL_VERSION: ${{ matrix.drupal-version }}
+      PHP_VERSION: ${{ matrix.php-version }}
       TERMINUS_BASE_ENV: dev
-      MULTIDEV_NAME: d${{ matrix.drupal-version }}-${{ github.run_number }}
       GIT_BRANCH: ${{ github.ref_name }}
       GIT_REF_TYPE: ${{ github.ref_type }}
     steps:
@@ -87,6 +100,9 @@ jobs:
           git config --global user.name "Github Actions"
           git config --global --add safe.directory '*'
           mkdir -p /root/.ssh && echo "${{ vars.SSH_CONFIG }}" >> "/root/.ssh/config"
+
+      - name: Set multidev name
+        run: echo "MULTIDEV_NAME=$(echo "d${DRUPAL_VERSION}p${PHP_VERSION}-${GITHUB_RUN_NUMBER}" | tr -d '.' | cut -c1-11)" >> "$GITHUB_ENV"
 
       - name: Log in to Terminus
         run: |
