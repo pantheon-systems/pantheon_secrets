@@ -10,9 +10,9 @@ Pantheon Secrets integration with the [Key](https://drupal.org/project/key) modu
 
 This module is for you if you meet the following requirements:
 
-* Using Drupal >= 9.4
+* Using Drupal >= 10
 
-* Use PHP >= 8.0
+* Use PHP >= 8.2
 
 * Part of the Secrets EA Program
 
