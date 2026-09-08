@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
@@ -110,13 +110,13 @@ jobs:
           GIT_REF_TYPE: ${{ github.ref_type }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@fcafdd6392932010c2bd5094439b8e33be2a8a09 # v2.37.0
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ env.PHP_VERSION }}
           tools: composer:v2
 
       - name: Install Terminus
-        uses: pantheon-systems/terminus-github-actions@409451ede17f75acac08f42edc823fee6c435057 # v1.2.8
+        uses: pantheon-systems/terminus-github-actions@b0a005d0e886678b25cb6cd7833cf8d8cf779900 # v1.2.9
         with:
           pantheon-machine-token: ${{ env.TERMINUS_TOKEN }}
           terminus-version: ${{ env.TERMINUS_VERSION }}
@@ -143,7 +143,7 @@ jobs:
 
       - name: Setup tmate session
         if: ${{ github.event.inputs.tmate_enabled == 1 }}
-        uses: mxschmitt/action-tmate@c0afd6f790e3a5564914980036ebf83216678101 # v3
+        uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113 # v3.24
 
       - name: Show PHP versions
         run: |
@@ -176,7 +176,7 @@ jobs:
       DRUPAL_ORG_REMOTE: ${{ secrets.DRUPAL_ORG_REMOTE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Install SSH key
