@@ -28,6 +28,7 @@ DRUPAL_VERSION="${6:-}"
 BASE_ENV=master
 if [ "$DRUPAL_VERSION" = "10" ]; then BASE_ENV=drupal10; fi
 if [ "$DRUPAL_VERSION" = "11" ]; then BASE_ENV=drupal11; fi
+if [ "$DRUPAL_VERSION" = "12" ]; then BASE_ENV=drupal12; fi
 
 # Pantheon multidev names are max 11 chars.
 MULTIDEV="${MULTIDEV_NAME:0:11}"

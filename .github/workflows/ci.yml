@@ -71,9 +71,10 @@ jobs:
     # Test combinations (floor + ceiling per Drupal version):
     #   Drupal 10: PHP 8.2, 8.4
     #   Drupal 11: PHP 8.3, 8.5
+    #   Drupal 12: PHP 8.5 (D12 requires PHP 8.5+)
     strategy:
       matrix:
-        drupal-version: [ 10, 11 ]
+        drupal-version: [ 10, 11, 12 ]
         php-version: [ "8.2", "8.3", "8.4", "8.5" ]
         exclude:
           - drupal-version: 10
@@ -83,6 +84,12 @@ jobs:
           - drupal-version: 11
             php-version: "8.2"
           - drupal-version: 11
+            php-version: "8.4"
+          - drupal-version: 12
+            php-version: "8.2"
+          - drupal-version: 12
+            php-version: "8.3"
+          - drupal-version: 12
             php-version: "8.4"
       fail-fast: false
     runs-on: ubuntu-latest
