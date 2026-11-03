@@ -32,17 +32,17 @@ class PantheonSecretsCommands extends DrushCommands {
   public function sync() {
     try {
       $added = $this->secretsSyncer->sync();
-      if (empty($added)) {
-        $this->logger()->notice(dt('No new secrets to sync.'));
-        return self::EXIT_SUCCESS;
-      }
-      $this->logger()->success(dt('Synced secrets: @secrets', ['@secrets' => implode(', ', $added)]));
-      return self::EXIT_SUCCESS;
     }
     catch (\Exception $e) {
       $this->logger()->error(dt('An error ocurred adding secrets: @error', ['@error' => $e->getMessage()]));
       return self::EXIT_FAILURE;
     }
+    if (empty($added)) {
+      $this->logger()->notice(dt('No new secrets to sync.'));
+      return self::EXIT_SUCCESS;
+    }
+    $this->logger()->notice(dt('Synced secrets: @secrets', ['@secrets' => implode(', ', $added)]));
+    return self::EXIT_SUCCESS;
   }
 
 }

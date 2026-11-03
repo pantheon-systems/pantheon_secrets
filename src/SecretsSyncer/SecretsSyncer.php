@@ -62,7 +62,10 @@ class SecretsSyncer implements SecretsSyncerInterface {
   public function sync(): array {
     $secrets = $this->secretsClient->getSecrets();
     $query = $this->entityTypeManager->getStorage('key')->getQuery();
-    $key_ids = $query->condition('key_provider', 'pantheon')->execute();
+    $key_ids = $query
+      ->accessCheck(FALSE)
+      ->condition('key_provider', 'pantheon')
+      ->execute();
     $keys = $this->entityTypeManager->getStorage('key')->loadMultiple($key_ids);
     $saved = [];
     foreach ($secrets as $secret) {
