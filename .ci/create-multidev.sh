@@ -25,9 +25,13 @@ PHP_VERSION="${5:-}"
 DRUPAL_VERSION="${6:-}"
 
 # Map the Drupal major to the fixture site's base environment/branch.
+# Drupal 12 uses its own fixture site (MySQL 8.4) whose base is dev (branch master),
+# because a MySQL 8.4 database can't be copied into a multidev on the MariaDB fixture site.
 BASE_ENV=master
-if [ "$DRUPAL_VERSION" = "10" ]; then BASE_ENV=drupal10; fi
-if [ "$DRUPAL_VERSION" = "11" ]; then BASE_ENV=drupal11; fi
+BASE_BRANCH=master
+if [ "$DRUPAL_VERSION" = "10" ]; then BASE_ENV=drupal10; BASE_BRANCH=drupal10; fi
+if [ "$DRUPAL_VERSION" = "11" ]; then BASE_ENV=drupal11; BASE_BRANCH=drupal11; fi
+if [ "$DRUPAL_VERSION" = "12" ]; then BASE_ENV=dev; BASE_BRANCH=master; fi
 
 # Pantheon multidev names are max 11 chars.
 MULTIDEV="${MULTIDEV_NAME:0:11}"
@@ -46,7 +50,7 @@ terminus multidev:create "$TERMINUS_SITE.$BASE_ENV" "$MULTIDEV"
 # force-push it onto the multidev branch below. Using `-b` (not a bare checkout)
 # is what makes the per-major code win over the master fork.
 GIT_URL=$(terminus connection:info "$TERMINUS_SITE.dev" --field=git_url)
-GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git clone "$GIT_URL" --branch "$BASE_ENV" pantheon-site
+GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git clone "$GIT_URL" --branch "$BASE_BRANCH" pantheon-site
 cd pantheon-site
 git checkout -b "$MULTIDEV"
 
