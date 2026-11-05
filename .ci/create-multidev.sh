@@ -9,7 +9,7 @@
 #   $1 - MULTIDEV_NAME   (e.g. d11p85-42; truncated to 11 chars here)
 #   $2 - TERMINUS_SITE   (fixture site machine name)
 #   $3 - GITHUB_ENV file (to export MULTIDEV_ENV for later steps)
-#   $4 - GIT_CONSTRAINT  (composer constraint for this module, e.g. dev-my-branch / 1.0.x-dev)
+#   $4 - GIT_CONSTRAINT  (composer constraint for this module, e.g. dev-my-branch / 1.x-dev)
 #   $5 - PHP_VERSION     (matrix PHP; written into the multidev pantheon.yml)
 #   $6 - DRUPAL_VERSION  (selects the fixture base environment/branch)
 #
@@ -20,7 +20,7 @@ set -euo pipefail
 MULTIDEV_NAME="$1"
 TERMINUS_SITE="$2"
 GITHUB_ENV_FILE="${3:-${GITHUB_ENV:-}}"
-GIT_CONSTRAINT="${4:-1.0.x-dev}"
+GIT_CONSTRAINT="${4:-1.x-dev}"
 PHP_VERSION="${5:-}"
 DRUPAL_VERSION="${6:-}"
 
