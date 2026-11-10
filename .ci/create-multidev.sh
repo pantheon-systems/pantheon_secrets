@@ -29,8 +29,8 @@ DRUPAL_VERSION="${6:-}"
 # because a MySQL 8.4 database can't be copied into a multidev on the MariaDB fixture site.
 BASE_ENV=master
 BASE_BRANCH=master
-if [ "$DRUPAL_VERSION" = "10" ]; then BASE_ENV=drupal10; BASE_BRANCH=drupal10; fi
-if [ "$DRUPAL_VERSION" = "11" ]; then BASE_ENV=drupal11; BASE_BRANCH=drupal11; fi
+if [ "$DRUPAL_VERSION" = "10" ]; then BASE_ENV=drupal106; BASE_BRANCH=drupal106; fi
+if [ "$DRUPAL_VERSION" = "11" ]; then BASE_ENV=drupal114; BASE_BRANCH=drupal114; fi
 if [ "$DRUPAL_VERSION" = "12" ]; then BASE_ENV=dev; BASE_BRANCH=master; fi
 
 # Pantheon multidev names are max 11 chars.
