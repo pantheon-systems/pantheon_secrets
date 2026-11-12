@@ -58,6 +58,7 @@ git checkout -b "$MULTIDEV"
 # accepts the ghs_ Actions token (the old build container's composer did not).
 composer config -g github-oauth.github.com "$GITHUB_TOKEN"
 composer config repositories.secrets vcs https://github.com/pantheon-systems/pantheon_secrets.git
+composer config --no-plugins allow-plugins.symfony/runtime true
 
 # Require this branch/tag of the module. The VCS repo resolves it from GitHub.
 composer require "drupal/pantheon_secrets:${GIT_CONSTRAINT}" --ignore-platform-req=php
